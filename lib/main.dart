@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,47 +18,48 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  static const _questions = [
+    {
+      'questionText': "what's your favorite color ?",
+      'answers': ['Black', 'Blue', 'Yellow']
+    },
+    {
+      'questionText': "what's your favorite animal ?",
+      'answers': ['Possum', 'Angler Fish', 'Monkey', 'Beaver']
+    },
+    {
+      'questionText': "how much do you think i am cool",
+      'answers': ['very too much too much', 'very much', 'much']
+    },
+  ];
+
   var _questionIndex = 0;
 
   void _answerQuestion() {
     setState(() {
-      if (_questionIndex >= 0 && _questionIndex < 2) {
-        _questionIndex += 1;
-      }
+      _questionIndex += 1;
     });
     print(_questionIndex);
+
+    if (_questionIndex < _questions.length) {
+      print('We have more _questions');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      {
-        'questionText': "what's your favorite color ?",
-        'answers': ['Black', 'Blue', 'Yellow']
-      },
-      {
-        'questionText': "what's your favorite animal ?",
-        'answers': ['Possum', 'Angler Fish', 'Monkey', 'Beaver']
-      },
-      {
-        'questionText': "how much do you think i am cool",
-        'answers': ['very too much too much', 'very much', 'much']
-      },
-    ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('My first App'),
         ),
-        body: Column(
-          children: [
-            Question(questions[_questionIndex]['questionText'] as String),
-            ...(questions[_questionIndex]['answers'] as List<String>)
-                .map((answer) {
-              return Answer(_answerQuestion, answer);
-            }).toList()
-          ],
-        ),
+        body: _questionIndex < _questions.length
+            ? Quiz(
+                answerQuestion: _answerQuestion,
+                questions: _questions,
+                questionIndex: _questionIndex,
+              )
+            : Result(),
       ),
     );
   }
